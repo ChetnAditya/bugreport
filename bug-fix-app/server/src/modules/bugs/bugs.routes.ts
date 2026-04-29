@@ -6,6 +6,7 @@ import {
   createBugSchema,
   updateBugSchema,
   transitionSchema,
+  addScreenshotsSchema,
 } from './bugs.schema';
 import * as svc from './bugs.service';
 
@@ -63,6 +64,24 @@ bugsRouter.post('/:id/transition', async (req, res, next) => {
   try {
     const input = transitionSchema.parse(req.body);
     const bug = await svc.transitionBug(req.user!.id, req.user!.role, req.params.id, input);
+    res.json({ bug });
+  } catch (e) {
+    next(e);
+  }
+});
+
+bugsRouter.get('/:id/screenshots/sign', async (req, res, next) => {
+  try {
+    res.json(await svc.getScreenshotSignature(req.user!.id, req.params.id));
+  } catch (e) {
+    next(e);
+  }
+});
+
+bugsRouter.post('/:id/screenshots', async (req, res, next) => {
+  try {
+    const { urls } = addScreenshotsSchema.parse(req.body);
+    const bug = await svc.addScreenshots(req.user!.id, req.params.id, urls);
     res.json({ bug });
   } catch (e) {
     next(e);

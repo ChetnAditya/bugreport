@@ -1,5 +1,6 @@
 import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
+import { signUpload } from '../../lib/cloudinary';
 import type { ListBugsQuery, CreateBugInput, UpdateBugInput, TransitionInput } from './bugs.schema';
 import { canTransition } from './lifecycle';
 
@@ -114,4 +115,24 @@ export async function transitionBug(
   if (input.to === 'CLOSED') updates.closedAt = new Date();
 
   return prisma.bug.update({ where: { id }, data: updates });
+}
+
+const MAX_SCREENSHOTS = 5;
+
+export async function getScreenshotSignature(actorId: string, bugId: string) {
+  const bug = await prisma.bug.findUnique({ where: { id: bugId } });
+  if (!bug) throw AppError.notFound('Bug not found');
+  if (bug.reporterId !== actorId) throw AppError.forbidden();
+  return signUpload(`bugs/${bugId}`);
+}
+
+export async function addScreenshots(actorId: string, bugId: string, urls: string[]) {
+  const bug = await prisma.bug.findUnique({ where: { id: bugId } });
+  if (!bug) throw AppError.notFound('Bug not found');
+  if (bug.reporterId !== actorId) throw AppError.forbidden();
+  const next = [...bug.screenshots, ...urls];
+  if (next.length > MAX_SCREENSHOTS) {
+    throw AppError.badRequest(`Max ${MAX_SCREENSHOTS} screenshots per bug`);
+  }
+  return prisma.bug.update({ where: { id: bugId }, data: { screenshots: next } });
 }
