@@ -15,11 +15,14 @@ import { requireRole } from './middleware/require-role';
 
 export function createApp(): Application {
   const app = express();
+  app.set('trust proxy', 1);
   app.use(helmet());
   app.use(
     cors({
       origin: env.CLIENT_ORIGIN,
       credentials: true,
+      methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     }),
   );
   app.use(express.json({ limit: '1mb' }));
