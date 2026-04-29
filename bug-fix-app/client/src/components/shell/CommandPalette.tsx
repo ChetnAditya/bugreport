@@ -9,8 +9,8 @@ import { useMe } from '@/hooks/use-auth';
 export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const nav = useNavigate();
   const me = useMe();
-  const isAdmin = me.data?.role === 'ADMIN';
-  const canCreate = me.data?.role === 'ADMIN' || me.data?.role === 'TESTER';
+  const isAdmin = me.data?.role === 'SUPERADMIN';
+  const canCreate = me.data?.role === 'SUPERADMIN' || me.data?.role === 'TESTER';
   const go = (path: string) => {
     onOpenChange(false);
     nav(path);

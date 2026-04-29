@@ -23,7 +23,7 @@ export function CommentItem({
   const update = useUpdateComment(comment.bugId, comment.id);
   const del = useDeleteComment(comment.bugId, comment.id);
   const isAuthor = comment.authorId === currentUserId;
-  const canDelete = isAuthor || currentRole === 'ADMIN';
+  const canDelete = isAuthor || currentRole === 'SUPERADMIN';
   const canEdit = isAuthor;
 
   return (

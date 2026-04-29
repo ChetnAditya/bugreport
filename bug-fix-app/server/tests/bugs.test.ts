@@ -17,7 +17,7 @@ async function makeBug(status: BugStatus, opts: { assigneeId?: string } = {}) {
 
 describe('GET /api/bugs', () => {
   it('returns paginated bugs filterable by status/severity', async () => {
-    const { user: reporter, cookie } = await authedAs('ADMIN');
+    const { user: reporter, cookie } = await authedAs('SUPERADMIN');
     await createBug({ reporterId: reporter.id, status: 'NEW', severity: 'HIGH' });
     await createBug({ reporterId: reporter.id, status: 'CLOSED', severity: 'LOW' });
     await createBug({ reporterId: reporter.id, status: 'NEW', severity: 'CRITICAL' });
@@ -34,7 +34,7 @@ describe('GET /api/bugs', () => {
   });
 
   it('text search hits title and description', async () => {
-    const { user: reporter, cookie } = await authedAs('ADMIN');
+    const { user: reporter, cookie } = await authedAs('SUPERADMIN');
     await createBug({ reporterId: reporter.id, title: 'Login button broken' });
     await createBug({ reporterId: reporter.id, title: 'Sign up page' });
     const res = await api().get('/api/bugs?q=login').set('Cookie', [cookie]);
@@ -140,7 +140,7 @@ describe('PATCH /api/bugs/:id', () => {
 
 describe('DELETE /api/bugs/:id', () => {
   it('admin can delete', async () => {
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const { user: r } = await createUser({ role: 'TESTER' });
     const bug = await createBug({ reporterId: r.id });
     const res = await api().delete(`/api/bugs/${bug.id}`).set('Cookie', [cookie]);
@@ -157,7 +157,7 @@ describe('DELETE /api/bugs/:id', () => {
 
 describe('POST /api/bugs/:id/transition', () => {
   it('admin assigns NEW → ASSIGNED with priority + assignee', async () => {
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const { user: dev } = await createUser({ role: 'DEVELOPER' });
     const bug = await makeBug('NEW');
     const res = await api()
@@ -183,7 +183,7 @@ describe('POST /api/bugs/:id/transition', () => {
   });
 
   it('admin VERIFIED → CLOSED sets closedAt', async () => {
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const bug = await makeBug('VERIFIED');
     const res = await api()
       .post(`/api/bugs/${bug.id}/transition`)
@@ -194,7 +194,7 @@ describe('POST /api/bugs/:id/transition', () => {
   });
 
   it('rejects illegal transitions with 400', async () => {
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const bug = await makeBug('NEW');
     const res = await api()
       .post(`/api/bugs/${bug.id}/transition`)

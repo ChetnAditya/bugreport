@@ -33,7 +33,7 @@ export function BugDetailPage() {
     );
   }
 
-  const isAdmin = me.data.role === 'ADMIN';
+  const isAdmin = me.data.role === 'SUPERADMIN';
 
   return (
     <div className="space-y-4">

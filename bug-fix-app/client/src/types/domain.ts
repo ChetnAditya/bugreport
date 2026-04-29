@@ -1,9 +1,16 @@
 // Re-exported from shared — the client consumes these as its source of truth.
-// Keeping a local copy avoids a monorepo package dep for now.
-export type Role = 'ADMIN' | 'DEVELOPER' | 'TESTER';
+export type Role = 'SUPERADMIN' | 'TEAMLEAD' | 'DEVELOPER' | 'TESTER';
 export type Severity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type Priority = 'P1' | 'P2' | 'P3' | 'P4';
 export type BugStatus = 'NEW' | 'ASSIGNED' | 'IN_PROGRESS' | 'FIXED' | 'VERIFIED' | 'CLOSED';
+
+export interface Team {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  createdAt: string;
+}
 
 export interface User {
   id: string;
@@ -11,6 +18,10 @@ export interface User {
   name: string;
   role: Role;
   createdAt: string;
+  teamId: string | null;
+  directManagerId: string | null;
+  team?: Pick<Team, 'id' | 'name' | 'slug'> | null;
+  directManager?: Pick<User, 'id' | 'name' | 'email'> | null;
 }
 
 export interface Bug {
@@ -24,8 +35,10 @@ export interface Bug {
   screenshots: string[];
   reporterId: string;
   assigneeId: string | null;
+  teamId: string | null;
   reporter?: Pick<User, 'id' | 'name' | 'email' | 'role'>;
   assignee?: Pick<User, 'id' | 'name' | 'email' | 'role'> | null;
+  team?: Pick<Team, 'id' | 'name'> | null;
   createdAt: string;
   updatedAt: string;
   closedAt: string | null;

@@ -15,7 +15,7 @@ describe('GET /api/users', () => {
   it('admin can list users, optionally filtered by role', async () => {
     await createUser({ email: 'd@x.com', role: 'DEVELOPER' });
     await createUser({ email: 't@x.com', role: 'TESTER' });
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const res = await api().get('/api/users?role=DEVELOPER').set('Cookie', [cookie]);
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveLength(1);
@@ -33,7 +33,7 @@ describe('GET /api/users', () => {
 describe('PATCH /api/users/:id/role', () => {
   it('admin can promote a user to DEVELOPER', async () => {
     const { user: target } = await createUser({ role: 'TESTER' });
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const res = await api()
       .patch(`/api/users/${target.id}/role`)
       .set('Cookie', [cookie])
@@ -48,12 +48,12 @@ describe('PATCH /api/users/:id/role', () => {
     const res = await api()
       .patch(`/api/users/${target.id}/role`)
       .set('Cookie', [cookie])
-      .send({ role: 'ADMIN' });
+      .send({ role: 'SUPERADMIN' });
     expect(res.status).toBe(403);
   });
 
   it('returns 404 on missing user', async () => {
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const res = await api()
       .patch('/api/users/does-not-exist/role')
       .set('Cookie', [cookie])

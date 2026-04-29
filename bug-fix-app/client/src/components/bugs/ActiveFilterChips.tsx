@@ -6,6 +6,7 @@ const labelMap: Record<keyof BugListFilter, string> = {
   severity: 'Severity',
   priority: 'Priority',
   assigneeId: 'Assignee',
+  teamId: 'Team',
   q: 'Search',
   page: 'Page',
   limit: 'Limit',

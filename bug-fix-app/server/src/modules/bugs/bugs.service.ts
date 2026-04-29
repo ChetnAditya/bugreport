@@ -2,14 +2,23 @@ import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
 import { signUpload } from '../../lib/cloudinary';
 import type { ListBugsQuery, CreateBugInput, UpdateBugInput, TransitionInput } from './bugs.schema';
+import type { Role } from '@prisma/client';
 import { canTransition } from './lifecycle';
 
-export async function listBugs(q: ListBugsQuery) {
+export async function listBugs(
+  actorId: string,
+  actorRole: Role,
+  actorTeamId: string | null,
+  q: ListBugsQuery,
+) {
+  const isSuperadmin = actorRole === 'SUPERADMIN';
+
   const where = {
     ...(q.status && { status: q.status }),
     ...(q.severity && { severity: q.severity }),
     ...(q.priority && { priority: q.priority }),
     ...(q.assigneeId && { assigneeId: q.assigneeId }),
+    ...(q.teamId && { teamId: q.teamId }),
     ...(q.q && {
       OR: [
         { title: { contains: q.q, mode: 'insensitive' as const } },
@@ -17,6 +26,12 @@ export async function listBugs(q: ListBugsQuery) {
       ],
     }),
   };
+
+  // Non-superadmin users only see bugs from their team
+  if (!isSuperadmin && actorTeamId) {
+    where.teamId = actorTeamId;
+  }
+
   const [total, data] = await Promise.all([
     prisma.bug.count({ where }),
     prisma.bug.findMany({
@@ -33,12 +48,18 @@ export async function listBugs(q: ListBugsQuery) {
   return { data, total, page: q.page, limit: q.limit };
 }
 
-export async function createBug(reporterId: string, input: CreateBugInput) {
+export async function createBug(
+  reporterId: string,
+  reporterRole: Role,
+  reporterTeamId: string | null,
+  input: CreateBugInput,
+) {
   return prisma.bug.create({
     data: {
       ...input,
       screenshots: input.screenshots ?? [],
       reporterId,
+      teamId: reporterTeamId,
     },
   });
 }
@@ -61,16 +82,25 @@ export async function getBug(id: string) {
 
 export async function updateBug(
   actorId: string,
-  actorRole: 'ADMIN' | 'DEVELOPER' | 'TESTER',
+  actorRole: Role,
+  actorTeamId: string | null,
   id: string,
   input: UpdateBugInput,
 ) {
   const bug = await prisma.bug.findUnique({ where: { id } });
   if (!bug) throw AppError.notFound('Bug not found');
+
+  const isSuperadmin = actorRole === 'SUPERADMIN';
   const isReporter = bug.reporterId === actorId;
-  const isAdmin = actorRole === 'ADMIN';
-  if (!isReporter && !isAdmin) throw AppError.forbidden();
+
+  if (!isReporter && !isSuperadmin) throw AppError.forbidden();
   if (bug.status !== 'NEW') throw AppError.badRequest('Bug can only be edited while status is NEW');
+
+  // Team check for non-superadmin
+  if (!isSuperadmin && actorTeamId && bug.teamId !== actorTeamId) {
+    throw AppError.forbidden();
+  }
+
   return prisma.bug.update({ where: { id }, data: input });
 }
 
@@ -82,12 +112,18 @@ export async function deleteBug(id: string) {
 
 export async function transitionBug(
   actorId: string,
-  actorRole: 'ADMIN' | 'DEVELOPER' | 'TESTER',
+  actorRole: Role,
+  actorTeamId: string | null,
   id: string,
   input: TransitionInput,
 ) {
   const bug = await prisma.bug.findUnique({ where: { id } });
   if (!bug) throw AppError.notFound('Bug not found');
+
+  const isSuperadmin = actorRole === 'SUPERADMIN';
+  if (!isSuperadmin && actorTeamId && bug.teamId !== actorTeamId) {
+    throw AppError.forbidden();
+  }
 
   const result = canTransition({
     fromStatus: bug.status,
@@ -119,14 +155,23 @@ export async function transitionBug(
 
 const MAX_SCREENSHOTS = 5;
 
-export async function getScreenshotSignature(actorId: string, bugId: string) {
+export async function getScreenshotSignature(
+  actorId: string,
+  actorTeamId: string | null,
+  bugId: string,
+) {
   const bug = await prisma.bug.findUnique({ where: { id: bugId } });
   if (!bug) throw AppError.notFound('Bug not found');
   if (bug.reporterId !== actorId) throw AppError.forbidden();
   return signUpload(`bugs/${bugId}`);
 }
 
-export async function addScreenshots(actorId: string, bugId: string, urls: string[]) {
+export async function addScreenshots(
+  actorId: string,
+  actorTeamId: string | null,
+  bugId: string,
+  urls: string[],
+) {
   const bug = await prisma.bug.findUnique({ where: { id: bugId } });
   if (!bug) throw AppError.notFound('Bug not found');
   if (bug.reporterId !== actorId) throw AppError.forbidden();

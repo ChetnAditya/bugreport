@@ -3,7 +3,7 @@ import { canTransition, type LifecycleContext } from '../src/modules/bugs/lifecy
 const baseCtx: LifecycleContext = {
   fromStatus: 'NEW',
   toStatus: 'ASSIGNED',
-  actorRole: 'ADMIN',
+  actorRole: 'SUPERADMIN',
   actorId: 'u_admin',
   bugAssigneeId: null,
   body: { assigneeId: 'u_dev', priority: 'P2' },
@@ -50,10 +50,10 @@ describe('canTransition', () => {
     ['IN_PROGRESS', 'FIXED', 'DEVELOPER', true],
     ['FIXED', 'VERIFIED', 'TESTER', true],
     ['FIXED', 'IN_PROGRESS', 'TESTER', true],
-    ['VERIFIED', 'CLOSED', 'ADMIN', true],
+    ['VERIFIED', 'CLOSED', 'SUPERADMIN', true],
     ['NEW', 'IN_PROGRESS', 'DEVELOPER', false],
-    ['CLOSED', 'IN_PROGRESS', 'ADMIN', false],
-    ['ASSIGNED', 'CLOSED', 'ADMIN', false],
+    ['CLOSED', 'IN_PROGRESS', 'SUPERADMIN', false],
+    ['ASSIGNED', 'CLOSED', 'SUPERADMIN', false],
   ] as const)('%s → %s by %s : %s', (from, to, role, ok) => {
     expect(
       canTransition({

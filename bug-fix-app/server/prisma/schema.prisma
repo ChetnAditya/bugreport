@@ -8,7 +8,8 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
+  SUPERADMIN
+  TEAMLEAD
   DEVELOPER
   TESTER
 }
@@ -36,16 +37,31 @@ enum BugStatus {
   CLOSED
 }
 
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  members     User[]
+  bugs        Bug[]
+}
+
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  name         String
-  passwordHash String
-  role         Role      @default(TESTER)
-  createdAt    DateTime  @default(now())
-  reportedBugs  Bug[]     @relation("Reporter")
-  assignedBugs Bug[]     @relation("Assignee")
-  comments     Comment[]
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  passwordHash    String
+  role            Role      @default(TESTER)
+  createdAt       DateTime  @default(now())
+  teamId          String?
+  team            Team?     @relation(fields: [teamId], references: [id])
+  directManagerId String?
+  directManager   User?     @relation("Manager", fields: [directManagerId], references: [id])
+  directReports   User[]    @relation("Manager")
+  reportedBugs    Bug[]     @relation("Reporter")
+  assignedBugs    Bug[]     @relation("Assignee")
+  comments        Comment[]
 }
 
 model Bug {
@@ -59,8 +75,10 @@ model Bug {
   screenshots      String[]
   reporterId       String
   assigneeId       String?
+  teamId           String?
   reporter         User       @relation("Reporter", fields: [reporterId], references: [id])
   assignee         User?      @relation("Assignee", fields: [assigneeId], references: [id])
+  team             Team?      @relation(fields: [teamId], references: [id])
   comments         Comment[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
@@ -69,6 +87,7 @@ model Bug {
   @@index([status])
   @@index([assigneeId])
   @@index([severity, priority])
+  @@index([teamId])
 }
 
 model Comment {

@@ -22,7 +22,7 @@ describe('requireAuth', () => {
 
 describe('requireRole', () => {
   it('allows the matching role', async () => {
-    const { user } = await createUser({ role: 'ADMIN' });
+    const { user } = await createUser({ role: 'SUPERADMIN' });
     const token = signJwt({ sub: user.id, role: user.role });
     const res = await api().get('/api/admin-test').set('Cookie', [`token=${token}`]);
     expect(res.status).toBe(200);

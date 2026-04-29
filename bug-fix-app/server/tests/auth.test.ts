@@ -1,6 +1,7 @@
 import { resetDb, createUser } from './helpers/factories';
 import { api } from './helpers/api';
 import { prisma } from '../src/db';
+import { loginLimiter } from '../src/middleware/rate-limit';
 
 beforeEach(resetDb);
 
@@ -90,6 +91,8 @@ describe('POST /api/auth/logout', () => {
 });
 
 describe('login rate-limit', () => {
+  beforeEach(() => loginLimiter.resetKey('rl@x.com'));
+
   it('returns 429 after 5 failed attempts in a row', async () => {
     await createUser({ email: 'rl@x.com', password: 'Right1234' });
     const bad = { email: 'rl@x.com', password: 'WrongOne1' };

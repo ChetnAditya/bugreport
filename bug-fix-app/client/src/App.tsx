@@ -11,6 +11,9 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { UsersPage } from '@/pages/UsersPage';
 import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { BugEditPage } from '@/pages/BugEditPage';
+import { TeamsPage } from '@/pages/TeamsPage';
+import { TeamDetailPage } from '@/pages/TeamDetailPage';
+import { OrgChartPage } from '@/pages/OrgChartPage';
 import { AppShell } from '@/components/shell/AppShell';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { RoleGuard } from '@/components/auth/RoleGuard';
@@ -53,8 +56,36 @@ export default function App() {
           path="/users"
           element={
             <Authed>
-              <RoleGuard allow={['ADMIN']}>
+              <RoleGuard allow={['SUPERADMIN']}>
                 <UsersPage />
+              </RoleGuard>
+            </Authed>
+          }
+        />
+        <Route
+          path="/teams"
+          element={
+            <Authed>
+              <RoleGuard allow={['SUPERADMIN']}>
+                <TeamsPage />
+              </RoleGuard>
+            </Authed>
+          }
+        />
+        <Route
+          path="/teams/:id"
+          element={
+            <Authed>
+              <TeamDetailPage />
+            </Authed>
+          }
+        />
+        <Route
+          path="/org-chart"
+          element={
+            <Authed>
+              <RoleGuard allow={['SUPERADMIN', 'TEAMLEAD']}>
+                <OrgChartPage />
               </RoleGuard>
             </Authed>
           }
@@ -63,7 +94,7 @@ export default function App() {
           path="/analytics"
           element={
             <Authed>
-              <RoleGuard allow={['ADMIN']}>
+              <RoleGuard allow={['SUPERADMIN', 'TEAMLEAD']}>
                 <AnalyticsPage />
               </RoleGuard>
             </Authed>
@@ -81,7 +112,7 @@ export default function App() {
           path="/bugs/new"
           element={
             <Authed>
-              <RoleGuard allow={['TESTER', 'ADMIN']}>
+              <RoleGuard allow={['TESTER', 'TEAMLEAD', 'SUPERADMIN']}>
                 <BugCreatePage />
               </RoleGuard>
             </Authed>

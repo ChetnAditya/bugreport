@@ -1,6 +1,7 @@
 import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
 import type { CreateCommentInput, UpdateCommentInput } from './comments.schema';
+import type { Role } from '@prisma/client';
 
 const authorSelect = { id: true, name: true, email: true, role: true } as const;
 
@@ -25,7 +26,7 @@ export async function createComment(authorId: string, bugId: string, input: Crea
 
 export async function updateComment(
   actorId: string,
-  actorRole: 'ADMIN' | 'DEVELOPER' | 'TESTER',
+  actorRole: Role,
   id: string,
   input: UpdateCommentInput,
 ) {
@@ -42,13 +43,13 @@ export async function updateComment(
 
 export async function deleteComment(
   actorId: string,
-  actorRole: 'ADMIN' | 'DEVELOPER' | 'TESTER',
+  actorRole: Role,
   id: string,
 ) {
   const c = await prisma.comment.findUnique({ where: { id } });
   if (!c) throw AppError.notFound('Comment not found');
   const isAuthor = c.authorId === actorId;
-  const isAdmin = actorRole === 'ADMIN';
-  if (!isAuthor && !isAdmin) throw AppError.forbidden();
+  const isPrivileged = actorRole === 'SUPERADMIN' || actorRole === 'TEAMLEAD';
+  if (!isAuthor && !isPrivileged) throw AppError.forbidden();
   await prisma.comment.delete({ where: { id } });
 }

@@ -19,6 +19,7 @@ export interface BugListFilter {
   severity?: Severity;
   priority?: Priority;
   assigneeId?: string;
+  teamId?: string;
   q?: string;
   page?: number;
   limit?: number;

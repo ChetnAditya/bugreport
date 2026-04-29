@@ -13,7 +13,7 @@ export function KeyboardShortcuts() {
           return;
         }
       }
-      if (e.key === 'c' && (me.data?.role === 'TESTER' || me.data?.role === 'ADMIN')) {
+      if (e.key === 'c' && (me.data?.role === 'TESTER' || me.data?.role === 'SUPERADMIN')) {
         nav('/bugs/new');
       }
     }

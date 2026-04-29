@@ -10,6 +10,14 @@ const safeUserSelect = {
   name: true,
   role: true,
   createdAt: true,
+  teamId: true,
+  directManagerId: true,
+} as const;
+
+const fullUserSelect = {
+  ...safeUserSelect,
+  team: { select: { id: true, name: true, slug: true } },
+  directManager: { select: { id: true, name: true, email: true } },
 } as const;
 
 export async function register(input: RegisterInput) {
@@ -29,7 +37,10 @@ export async function register(input: RegisterInput) {
 }
 
 export async function login(input: LoginInput) {
-  const row = await prisma.user.findUnique({ where: { email: input.email } });
+  const row = await prisma.user.findUnique({
+    where: { email: input.email },
+    select: { id: true, email: true, name: true, passwordHash: true, role: true, createdAt: true, teamId: true, directManagerId: true },
+  });
   if (!row) throw AppError.unauthorized('Invalid credentials');
   const ok = await verifyPassword(input.password, row.passwordHash);
   if (!ok) throw AppError.unauthorized('Invalid credentials');
@@ -41,7 +52,7 @@ export async function login(input: LoginInput) {
 export async function me(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: safeUserSelect,
+    select: fullUserSelect,
   });
   if (!user) throw AppError.unauthorized();
   return user;

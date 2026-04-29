@@ -10,7 +10,14 @@ import { Button } from '@/components/ui/button';
 import { useChangeRole } from '@/hooks/use-users';
 import type { Role, User } from '@/types/domain';
 
-const ROLES: Role[] = ['TESTER', 'DEVELOPER', 'ADMIN'];
+const ROLES: Role[] = ['SUPERADMIN', 'TEAMLEAD', 'DEVELOPER', 'TESTER'];
+
+const roleLabel: Record<Role, string> = {
+  SUPERADMIN: 'Superadmin',
+  TEAMLEAD: 'Team Lead',
+  DEVELOPER: 'Developer',
+  TESTER: 'Tester',
+};
 
 export function RoleChangeDialog({
   user,
@@ -33,7 +40,7 @@ export function RoleChangeDialog({
         <Select value={role} onValueChange={(v) => setRole(v as Role)}>
           <SelectTrigger aria-label="New role"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+            {ROLES.map((r) => <SelectItem key={r} value={r}>{roleLabel[r]}</SelectItem>)}
           </SelectContent>
         </Select>
         <DialogFooter>

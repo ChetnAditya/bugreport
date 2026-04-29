@@ -29,6 +29,7 @@ export const listBugsQuery = z.object({
   severity: z.enum(SEVERITY).optional(),
   priority: z.enum(PRIORITY).optional(),
   assigneeId: z.string().cuid().optional(),
+  teamId: z.string().cuid().optional(),
   q: z.string().min(1).max(200).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),

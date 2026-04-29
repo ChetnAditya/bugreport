@@ -41,7 +41,7 @@ export function BugEditPage() {
   if (!bug.data) return <p>Not found.</p>;
 
   const isReporter = bug.data.reporterId === me.data.id;
-  const isAdmin = me.data.role === 'ADMIN';
+  const isAdmin = me.data.role === 'SUPERADMIN';
   const canEdit = (isReporter || isAdmin) && bug.data.status === 'NEW';
   if (!canEdit) {
     return (

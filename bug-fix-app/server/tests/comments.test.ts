@@ -92,7 +92,7 @@ describe('PATCH /api/comments/:id', () => {
     const { user: r } = await createUser({ role: 'TESTER' });
     const bug = await createBug({ reporterId: r.id });
     const c = await createComment({ bugId: bug.id, authorId: author.id });
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const res = await api()
       .patch(`/api/comments/${c.id}`)
       .set('Cookie', [cookie])
@@ -116,7 +116,7 @@ describe('DELETE /api/comments/:id', () => {
     const { user: r } = await createUser({ role: 'TESTER' });
     const bug = await createBug({ reporterId: r.id });
     const c = await createComment({ bugId: bug.id, authorId: author.id });
-    const { cookie } = await authedAs('ADMIN');
+    const { cookie } = await authedAs('SUPERADMIN');
     const res = await api().delete(`/api/comments/${c.id}`).set('Cookie', [cookie]);
     expect(res.status).toBe(204);
   });

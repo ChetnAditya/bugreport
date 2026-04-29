@@ -1,18 +1,21 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Bug, BarChart3, Users } from 'lucide-react';
+import { LayoutDashboard, Bug, BarChart3, Users, UsersRound, Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMe } from '@/hooks/use-auth';
 
 const items = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, role: 'all' as const },
-  { to: '/bugs', label: 'Bugs', icon: Bug, role: 'all' as const },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3, role: 'admin' as const },
-  { to: '/users', label: 'Users', icon: Users, role: 'admin' as const },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, lead: false },
+  { to: '/bugs', label: 'Bugs', icon: Bug, lead: false },
+  { to: '/analytics', label: 'Analytics', icon: BarChart3, lead: true },
+  { to: '/users', label: 'Users', icon: Users, lead: false },
+  { to: '/teams', label: 'Teams', icon: UsersRound, lead: false },
+  { to: '/org-chart', label: 'Org Chart', icon: Network, lead: true },
 ];
 
 export function SideNav() {
   const me = useMe();
-  const isAdmin = me.data?.role === 'ADMIN';
+  const isLead = me.data?.role === 'SUPERADMIN' || me.data?.role === 'TEAMLEAD';
+  const isSuperadmin = me.data?.role === 'SUPERADMIN';
   return (
     <nav
       aria-label="Primary"
@@ -20,7 +23,7 @@ export function SideNav() {
     >
       <ul className="flex flex-col gap-1 p-3">
         {items
-          .filter((i) => i.role !== 'admin' || isAdmin)
+          .filter((i) => !i.lead || isLead)
           .map((i) => (
             <li key={i.to}>
               <NavLink

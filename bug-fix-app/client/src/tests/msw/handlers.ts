@@ -7,6 +7,8 @@ const TEST_USER: User = {
   name: 'Jane',
   role: 'TESTER',
   createdAt: new Date().toISOString(),
+  teamId: null,
+  directManagerId: null,
 };
 
 export const baseHandlers = [

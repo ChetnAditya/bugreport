@@ -6,4 +6,8 @@ export const loginLimiter = rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { error: { code: 'RATE_LIMIT', message: 'Too many login attempts' } },
+  keyGenerator: (req) => {
+    const body = req.body as Record<string, unknown> | undefined;
+    return (body?.email as string) ?? req.ip ?? 'unknown';
+  },
 });

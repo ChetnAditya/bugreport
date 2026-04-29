@@ -7,7 +7,7 @@ import type { BugStatus } from '@prisma/client';
 beforeEach(resetDb);
 
 async function adminCookie() {
-  const { user } = await createUser({ role: 'ADMIN' });
+  const { user } = await createUser({ role: 'SUPERADMIN' });
   return `token=${signJwt({ sub: user.id, role: user.role })}`;
 }
 
