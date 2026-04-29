@@ -13,11 +13,71 @@ enum Role {
   TESTER
 }
 
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Priority {
+  P1
+  P2
+  P3
+  P4
+}
+
+enum BugStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  FIXED
+  VERIFIED
+  CLOSED
+}
+
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   name         String
   passwordHash String
-  role         Role     @default(TESTER)
-  createdAt    DateTime @default(now())
+  role         Role      @default(TESTER)
+  createdAt    DateTime  @default(now())
+  reportedBugs  Bug[]     @relation("Reporter")
+  assignedBugs Bug[]     @relation("Assignee")
+  comments     Comment[]
+}
+
+model Bug {
+  id               String     @id @default(cuid())
+  title            String
+  description      String
+  stepsToReproduce String
+  severity         Severity
+  priority         Priority?
+  status           BugStatus  @default(NEW)
+  screenshots      String[]
+  reporterId       String
+  assigneeId       String?
+  reporter         User       @relation("Reporter", fields: [reporterId], references: [id])
+  assignee         User?      @relation("Assignee", fields: [assigneeId], references: [id])
+  comments         Comment[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  closedAt         DateTime?
+
+  @@index([status])
+  @@index([assigneeId])
+  @@index([severity, priority])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  bugId     String
+  authorId  String
+  text      String
+  bug       Bug      @relation(fields: [bugId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
