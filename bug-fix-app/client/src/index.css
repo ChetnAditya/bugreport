@@ -1,0 +1,65 @@
+@import './styles/fonts.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base: 9 9 11;
+    --bg-surface: 24 24 27;
+    --bg-elevated: 39 39 42;
+    --border: 39 39 42;
+    --text-primary: 244 244 245;
+    --text-secondary: 161 161 170;
+    --text-tertiary: 113 113 122;
+    --accent: 251 191 36;
+    --sev-low: 52 211 153;
+    --sev-med: 56 189 248;
+    --sev-high: 251 191 36;
+    --sev-critical: 251 113 133;
+  }
+  html.light {
+    --bg-base: 250 250 250;
+    --bg-surface: 255 255 255;
+    --bg-elevated: 244 244 245;
+    --border: 228 228 231;
+    --text-primary: 24 24 27;
+    --text-secondary: 82 82 91;
+    --text-tertiary: 113 113 122;
+    --accent: 217 119 6;
+    --sev-low: 5 150 105;
+    --sev-med: 2 132 199;
+    --sev-high: 217 119 6;
+    --sev-critical: 225 29 72;
+  }
+  html, body { background: rgb(var(--bg-base)); color: rgb(var(--text-primary)); }
+  body { font-family: theme('fontFamily.body'); }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgb(var(--text-tertiary) / 0.10) 1px, transparent 1px);
+    background-size: 8px 8px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  *:focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+@layer utilities {
+  .bg-base     { background-color: rgb(var(--bg-base)); }
+  .bg-surface  { background-color: rgb(var(--bg-surface)); }
+  .bg-elevated { background-color: rgb(var(--bg-elevated)); }
+  .text-primary   { color: rgb(var(--text-primary)); }
+  .text-secondary { color: rgb(var(--text-secondary)); }
+  .text-tertiary  { color: rgb(var(--text-tertiary)); }
+  .border-default { border-color: rgb(var(--border)); }
+  .text-accent { color: rgb(var(--accent)); }
+  .bg-accent   { background-color: rgb(var(--accent)); color: rgb(var(--bg-base)); }
+}
