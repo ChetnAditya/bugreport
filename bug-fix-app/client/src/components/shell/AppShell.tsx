@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import { TopBar } from './TopBar';
 import { SideNav } from './SideNav';
 import { BottomNav } from './BottomNav';
 import { SkipLink } from '@/components/common/SkipLink';
+import { CommandPalette, useCommandPaletteHotkey } from './CommandPalette';
+import { KeyboardShortcuts } from './KeyboardShortcuts';
 
 export function AppShell({ children }: PropsWithChildren) {
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  useCommandPaletteHotkey(setPaletteOpen);
   return (
     <div className="min-h-screen flex flex-col">
       <SkipLink />
-      <TopBar />
+      <TopBar onSearch={() => setPaletteOpen(true)} />
       <div className="flex flex-1">
         <SideNav />
         <main
@@ -19,6 +24,8 @@ export function AppShell({ children }: PropsWithChildren) {
         </main>
       </div>
       <BottomNav />
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <KeyboardShortcuts />
     </div>
   );
 }
