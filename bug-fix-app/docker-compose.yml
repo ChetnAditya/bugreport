@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bugfix_pg
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: bugfix
+      POSTGRES_PASSWORD: bugfix
+      POSTGRES_DB: bugfix_dev
+    volumes:
+      - bugfix_pgdata:/var/lib/postgresql/data
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: bugfix_pg_test
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: bugfix
+      POSTGRES_PASSWORD: bugfix
+      POSTGRES_DB: bugfix_test
+volumes:
+  bugfix_pgdata:
