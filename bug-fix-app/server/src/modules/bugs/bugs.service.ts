@@ -42,6 +42,7 @@ export async function listBugs(
       include: {
         reporter: { select: { id: true, name: true, email: true, role: true } },
         assignee: { select: { id: true, name: true, email: true, role: true } },
+        team: { select: { id: true, name: true } },
       },
     }),
   ]);
@@ -70,6 +71,7 @@ export async function getBug(id: string) {
     include: {
       reporter: { select: { id: true, name: true, email: true, role: true } },
       assignee: { select: { id: true, name: true, email: true, role: true } },
+      team: { select: { id: true, name: true } },
       comments: {
         orderBy: { createdAt: 'asc' },
         include: { author: { select: { id: true, name: true, email: true, role: true } } },

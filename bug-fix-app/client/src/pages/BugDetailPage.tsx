@@ -46,7 +46,7 @@ export function BugDetailPage() {
           <p className="text-xs text-tertiary font-mono">#{bug.data.id.slice(0, 8)}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <TransitionMenu bug={bug.data} role={me.data.role} currentUserId={me.data.id} />
+          <TransitionMenu bug={bug.data} role={me.data.role} currentUserId={me.data.id} teamId={me.data.teamId} />
           {isAdmin && (
             <Button
               variant="outline"

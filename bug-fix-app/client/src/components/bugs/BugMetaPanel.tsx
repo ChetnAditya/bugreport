@@ -24,6 +24,9 @@ export function BugMetaPanel({ bug }: { bug: Bug }) {
       <div className="space-y-1 text-xs font-mono text-tertiary">
         <p><span className="uppercase tracking-wider">Reporter</span><br /><span className="text-secondary">{bug.reporter?.name ?? '—'}</span></p>
         <p><span className="uppercase tracking-wider">Assignee</span><br /><span className="text-secondary">{bug.assignee?.name ?? 'Unassigned'}</span></p>
+        {bug.team && (
+          <p><span className="uppercase tracking-wider">Team</span><br /><span className="text-secondary">{bug.team.name}</span></p>
+        )}
       </div>
       <div className="space-y-1 text-xs font-mono text-tertiary">
         <p><span className="uppercase tracking-wider">Opened</span><br /><span className="text-secondary">{format(new Date(bug.createdAt), 'PP p')}</span></p>

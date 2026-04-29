@@ -18,7 +18,7 @@ import type { Bug, Priority, Role } from '@/types/domain';
 
 const PRIORITIES: Priority[] = ['P1', 'P2', 'P3', 'P4'];
 
-export function TransitionMenu({ bug, role, currentUserId }: { bug: Bug; role: Role; currentUserId: string }) {
+export function TransitionMenu({ bug, role, currentUserId, teamId }: { bug: Bug; role: Role; currentUserId: string; teamId?: string | null }) {
   const [pending, setPending] = useState<AvailableTransition | null>(null);
   const [assigneeId, setAssigneeId] = useState<string | undefined>();
   const [priority, setPriority] = useState<Priority | undefined>();
@@ -67,7 +67,7 @@ export function TransitionMenu({ bug, role, currentUserId }: { bug: Bug; role: R
             {pending?.needsAssignee && (
               <div className="space-y-1">
                 <span className="text-xs text-tertiary font-mono">Assignee</span>
-                <AssigneeSelector value={assigneeId} onChange={setAssigneeId} />
+                <AssigneeSelector value={assigneeId} onChange={setAssigneeId} teamId={teamId} />
               </div>
             )}
             {pending?.needsPriority && (
