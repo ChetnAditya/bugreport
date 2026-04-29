@@ -8,6 +8,8 @@ import { errorHandler } from './middleware/error-handler';
 import { authRouter } from './modules/auth/auth.routes';
 import { usersRouter } from './modules/users/users.routes';
 import { bugsRouter } from './modules/bugs/bugs.routes';
+import { statsRouter } from './modules/stats/stats.routes';
+import { commentsRouter } from './modules/comments/comments.routes';
 import { requireAuth } from './middleware/require-auth';
 import { requireRole } from './middleware/require-role';
 
@@ -29,6 +31,8 @@ export function createApp(): Application {
   app.use('/api/auth', authRouter);
   app.use('/api/users', usersRouter);
   app.use('/api/bugs', bugsRouter);
+  app.use('/api/stats', statsRouter);
+  app.use('/api/comments', commentsRouter);
 
   // test route for requireRole middleware tests
   app.get('/api/admin-test', requireAuth, requireRole('ADMIN'), (_req, res) =>

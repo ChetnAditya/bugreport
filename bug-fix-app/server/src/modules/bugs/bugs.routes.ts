@@ -8,6 +8,7 @@ import {
   transitionSchema,
   addScreenshotsSchema,
 } from './bugs.schema';
+import { bugCommentsRouter } from '../comments/comments.routes';
 import * as svc from './bugs.service';
 
 export const bugsRouter = Router();
@@ -87,3 +88,5 @@ bugsRouter.post('/:id/screenshots', async (req, res, next) => {
     next(e);
   }
 });
+
+bugsRouter.use('/:id/comments', bugCommentsRouter);
