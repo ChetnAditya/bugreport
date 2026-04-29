@@ -8,9 +8,13 @@ import { BugDetailPage } from '@/pages/BugDetailPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { ForbiddenPage } from '@/pages/ForbiddenPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { UsersPage } from '@/pages/UsersPage';
+import { AnalyticsPage } from '@/pages/AnalyticsPage';
+import { BugEditPage } from '@/pages/BugEditPage';
 import { AppShell } from '@/components/shell/AppShell';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { RoleGuard } from '@/components/auth/RoleGuard';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 function Authed({ children }: { children: React.ReactNode }) {
   return (
@@ -23,7 +27,8 @@ function Authed({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Routes>
+      <ErrorBoundary>
+        <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -41,6 +46,26 @@ export default function App() {
           element={
             <Authed>
               <DashboardPage />
+            </Authed>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <Authed>
+              <RoleGuard allow={['ADMIN']}>
+                <UsersPage />
+              </RoleGuard>
+            </Authed>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <Authed>
+              <RoleGuard allow={['ADMIN']}>
+                <AnalyticsPage />
+              </RoleGuard>
             </Authed>
           }
         />
@@ -70,8 +95,17 @@ export default function App() {
             </Authed>
           }
         />
+        <Route
+          path="/bugs/:id/edit"
+          element={
+            <Authed>
+              <BugEditPage />
+            </Authed>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }
