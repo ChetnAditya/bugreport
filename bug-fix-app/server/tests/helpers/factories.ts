@@ -49,3 +49,17 @@ export async function createUser(opts: {
   });
   return { user, password };
 }
+
+export async function createComment(opts: {
+  bugId: string;
+  authorId: string;
+  text?: string;
+}) {
+  return prisma.comment.create({
+    data: {
+      bugId: opts.bugId,
+      authorId: opts.authorId,
+      text: opts.text ?? 'A comment',
+    },
+  });
+}
