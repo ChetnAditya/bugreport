@@ -1,9 +1,11 @@
-import { resetDb, createUser, createBug } from './helpers/factories';
+import { resetDb, createUser, createBug, createComment } from './helpers/factories';
 import { api } from './helpers/api';
 import { signJwt } from '../src/lib/jwt';
 import type { Role } from '@prisma/client';
 
-beforeEach(resetDb);
+beforeEach(async () => {
+  await resetDb();
+});
 
 async function authedAs(role: Role) {
   const { user } = await createUser({ role });
@@ -68,5 +70,64 @@ describe('GET /api/bugs/:id/comments', () => {
     expect(res.body.data).toHaveLength(2);
     expect(res.body.data[0].text).toBe('one');
     expect(res.body.data[0].author.id).toBe(a.id);
+  });
+});
+
+describe('PATCH /api/comments/:id', () => {
+  it('author can edit own comment', async () => {
+    const { user, cookie } = await authedAs('DEVELOPER');
+    const { user: r } = await createUser({ role: 'TESTER' });
+    const bug = await createBug({ reporterId: r.id });
+    const c = await createComment({ bugId: bug.id, authorId: user.id });
+    const res = await api()
+      .patch(`/api/comments/${c.id}`)
+      .set('Cookie', [cookie])
+      .send({ text: 'Updated' });
+    expect(res.status).toBe(200);
+    expect(res.body.comment.text).toBe('Updated');
+  });
+
+  it('non-author cannot edit (even admin)', async () => {
+    const { user: author } = await createUser({ role: 'DEVELOPER' });
+    const { user: r } = await createUser({ role: 'TESTER' });
+    const bug = await createBug({ reporterId: r.id });
+    const c = await createComment({ bugId: bug.id, authorId: author.id });
+    const { cookie } = await authedAs('ADMIN');
+    const res = await api()
+      .patch(`/api/comments/${c.id}`)
+      .set('Cookie', [cookie])
+      .send({ text: 'Hacked' });
+    expect(res.status).toBe(403);
+  });
+});
+
+describe('DELETE /api/comments/:id', () => {
+  it('author can delete own comment', async () => {
+    const { user, cookie } = await authedAs('DEVELOPER');
+    const { user: r } = await createUser({ role: 'TESTER' });
+    const bug = await createBug({ reporterId: r.id });
+    const c = await createComment({ bugId: bug.id, authorId: user.id });
+    const res = await api().delete(`/api/comments/${c.id}`).set('Cookie', [cookie]);
+    expect(res.status).toBe(204);
+  });
+
+  it('admin can delete any comment', async () => {
+    const { user: author } = await createUser({ role: 'DEVELOPER' });
+    const { user: r } = await createUser({ role: 'TESTER' });
+    const bug = await createBug({ reporterId: r.id });
+    const c = await createComment({ bugId: bug.id, authorId: author.id });
+    const { cookie } = await authedAs('ADMIN');
+    const res = await api().delete(`/api/comments/${c.id}`).set('Cookie', [cookie]);
+    expect(res.status).toBe(204);
+  });
+
+  it('other users cannot delete', async () => {
+    const { user: author } = await createUser({ role: 'DEVELOPER' });
+    const { user: r } = await createUser({ role: 'TESTER' });
+    const bug = await createBug({ reporterId: r.id });
+    const c = await createComment({ bugId: bug.id, authorId: author.id });
+    const { cookie } = await authedAs('TESTER');
+    const res = await api().delete(`/api/comments/${c.id}`).set('Cookie', [cookie]);
+    expect(res.status).toBe(403);
   });
 });
