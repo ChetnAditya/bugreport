@@ -17,7 +17,7 @@ export function BugListPage() {
   const { filter, setFilter, clear } = useBugFilters();
   const list = useBugList({ ...filter, limit: filter.limit ?? 50 });
   const me = useMe();
-  const canCreate = me.data?.role === 'TESTER' || me.data?.role === 'SUPERADMIN';
+  const canCreate = ['TESTER', 'TEAMLEAD', 'SUPERADMIN'].includes(me.data?.role ?? '');
 
   const parentRef = useRef<HTMLDivElement>(null);
   const rows = list.data?.data ?? [];

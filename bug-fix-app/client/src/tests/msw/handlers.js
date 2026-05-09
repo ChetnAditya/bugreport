@@ -5,6 +5,8 @@ const TEST_USER = {
     name: 'Jane',
     role: 'TESTER',
     createdAt: new Date().toISOString(),
+    teamId: null,
+    directManagerId: null,
 };
 export const baseHandlers = [
     http.post('http://localhost:4000/api/auth/register', async ({ request }) => {

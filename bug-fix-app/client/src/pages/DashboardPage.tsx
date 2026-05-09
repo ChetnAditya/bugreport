@@ -6,13 +6,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StatusBadge } from '@/components/bugs/StatusBadge';
 import { SeverityChip } from '@/components/bugs/SeverityChip';
 import { EmptyState } from '@/components/common/EmptyState';
+import { useMe } from '@/hooks/use-auth';
 
 export function DashboardPage() {
+  const me = useMe();
   const recent = useBugList({ page: 1, limit: 8 });
   const open = useBugList({ status: 'NEW', page: 1, limit: 1 });
   const wip = useBugList({ status: 'IN_PROGRESS', page: 1, limit: 1 });
   const fixed = useBugList({ status: 'FIXED', page: 1, limit: 1 });
   const closed = useBugList({ status: 'CLOSED', page: 1, limit: 1 });
+
+  const canCreate = ['TESTER', 'TEAMLEAD', 'SUPERADMIN'].includes(me.data?.role ?? '');
 
   return (
     <div className="space-y-8">
@@ -39,11 +43,13 @@ export function DashboardPage() {
         ) : recent.data?.data.length === 0 ? (
           <EmptyState
             title="No bugs yet"
-            description="Be the first to report one."
+            description={canCreate ? 'Be the first to report one.' : 'No bugs assigned yet.'}
             action={
-              <Link to="/bugs/new" className="text-accent underline">
-                Report a bug →
-              </Link>
+              canCreate ? (
+                <Link to="/bugs/new" className="text-accent underline">
+                  Report a bug →
+                </Link>
+              ) : undefined
             }
           />
         ) : (

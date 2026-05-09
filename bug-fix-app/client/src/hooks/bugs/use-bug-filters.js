@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useMe } from '@/hooks/use-auth';
 const STATUS_VALUES = ['NEW', 'ASSIGNED', 'IN_PROGRESS', 'FIXED', 'VERIFIED', 'CLOSED'];
 const SEVERITY_VALUES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 const PRIORITY_VALUES = ['P1', 'P2', 'P3', 'P4'];
@@ -8,6 +9,14 @@ function pick(value, allowed) {
 }
 export function useBugFilters() {
     const [params, setParams] = useSearchParams();
+    const me = useMe();
+    const prevUserId = useRef(me.data?.id);
+    useEffect(() => {
+        if (me.data?.id && me.data.id !== prevUserId.current) {
+            setParams(new URLSearchParams(), { replace: true });
+            prevUserId.current = me.data.id;
+        }
+    }, [me.data?.id, setParams]);
     const filter = useMemo(() => {
         const page = Number(params.get('page') ?? 1);
         const limit = Number(params.get('limit') ?? 20);

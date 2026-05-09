@@ -7,7 +7,11 @@ export function RoleGuard({ allow, children }) {
         return null;
     if (!me.data)
         return _jsx(Navigate, { to: "/login", replace: true });
-    if (!allow.includes(me.data.role))
+    // SUPERADMIN supersedes ADMIN for backward compat
+    const userRole = me.data.role;
+    if (userRole === 'SUPERADMIN')
+        return _jsx(_Fragment, { children: children });
+    if (!allow.includes(userRole))
         return _jsx(Navigate, { to: "/403", replace: true });
     return _jsx(_Fragment, { children: children });
 }

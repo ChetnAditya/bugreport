@@ -4,12 +4,12 @@ import { cn } from '@/lib/utils';
 import { useMe } from '@/hooks/use-auth';
 
 const items = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, lead: false },
-  { to: '/bugs', label: 'Bugs', icon: Bug, lead: false },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3, lead: true },
-  { to: '/users', label: 'Users', icon: Users, lead: false },
-  { to: '/teams', label: 'Teams', icon: UsersRound, lead: false },
-  { to: '/org-chart', label: 'Org Chart', icon: Network, lead: true },
+  { to: '/dashboard',  label: 'Dashboard', icon: LayoutDashboard, lead: false, superadmin: false },
+  { to: '/bugs',        label: 'Bugs',      icon: Bug,             lead: false, superadmin: false },
+  { to: '/analytics',   label: 'Analytics', icon: BarChart3,       lead: true,  superadmin: false },
+  { to: '/org-chart',   label: 'Org Chart', icon: Network,         lead: true,  superadmin: false },
+  { to: '/users',       label: 'Users',     icon: Users,           lead: false, superadmin: true  },
+  { to: '/teams',       label: 'Teams',     icon: UsersRound,      lead: false, superadmin: true  },
 ];
 
 export function SideNav() {
@@ -23,7 +23,7 @@ export function SideNav() {
     >
       <ul className="flex flex-col gap-1 p-3">
         {items
-          .filter((i) => !i.lead || isLead)
+          .filter((i) => (!i.lead || isLead) && (!i.superadmin || isSuperadmin))
           .map((i) => (
             <li key={i.to}>
               <NavLink

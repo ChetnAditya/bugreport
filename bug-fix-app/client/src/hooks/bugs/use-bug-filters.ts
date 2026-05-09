@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { BugListFilter } from './use-bugs';
 import type { BugStatus, Severity, Priority } from '@/types/domain';
+import { useMe } from '@/hooks/use-auth';
 
 const STATUS_VALUES: BugStatus[] = ['NEW', 'ASSIGNED', 'IN_PROGRESS', 'FIXED', 'VERIFIED', 'CLOSED'];
 const SEVERITY_VALUES: Severity[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
@@ -13,6 +14,15 @@ function pick<T extends string>(value: string | null, allowed: readonly T[]): T 
 
 export function useBugFilters() {
   const [params, setParams] = useSearchParams();
+  const me = useMe();
+  const prevUserId = useRef(me.data?.id);
+
+  useEffect(() => {
+    if (me.data?.id && me.data.id !== prevUserId.current) {
+      setParams(new URLSearchParams(), { replace: true });
+      prevUserId.current = me.data.id;
+    }
+  }, [me.data?.id, setParams]);
 
   const filter = useMemo<BugListFilter>(() => {
     const page = Number(params.get('page') ?? 1);

@@ -10,7 +10,7 @@ import { availableTransitions } from '@/lib/lifecycle-client';
 import { AssigneeSelector } from './AssigneeSelector';
 import { useTransitionBug } from '@/hooks/bugs/use-bugs';
 const PRIORITIES = ['P1', 'P2', 'P3', 'P4'];
-export function TransitionMenu({ bug, role, currentUserId }) {
+export function TransitionMenu({ bug, role, currentUserId, teamId }) {
     const [pending, setPending] = useState(null);
     const [assigneeId, setAssigneeId] = useState();
     const [priority, setPriority] = useState();
@@ -28,7 +28,7 @@ export function TransitionMenu({ bug, role, currentUserId }) {
                                     return;
                                 }
                                 await runTransition(o);
-                            }, children: o.label }, `${o.to}-${o.label}`))) })] }), _jsx(Dialog, { open: !!pending, onOpenChange: (o) => !o && setPending(null), children: _jsxs(DialogContent, { children: [_jsx(DialogHeader, { children: _jsx(DialogTitle, { children: pending?.label }) }), _jsxs("div", { className: "space-y-3", children: [pending?.needsAssignee && (_jsxs("div", { className: "space-y-1", children: [_jsx("span", { className: "text-xs text-tertiary font-mono", children: "Assignee" }), _jsx(AssigneeSelector, { value: assigneeId, onChange: setAssigneeId })] })), pending?.needsPriority && (_jsxs("div", { className: "space-y-1", children: [_jsx("span", { className: "text-xs text-tertiary font-mono", children: "Priority" }), _jsxs(Select, { value: priority, onValueChange: (v) => setPriority(v), children: [_jsx(SelectTrigger, { "aria-label": "Priority", children: _jsx(SelectValue, { placeholder: "Select priority" }) }), _jsx(SelectContent, { children: PRIORITIES.map((p) => _jsx(SelectItem, { value: p, children: p }, p)) })] })] }))] }), _jsxs(DialogFooter, { children: [_jsx(Button, { variant: "outline", onClick: () => setPending(null), children: "Cancel" }), _jsx(Button, { disabled: (pending?.needsAssignee && !assigneeId) ||
+                            }, children: o.label }, `${o.to}-${o.label}`))) })] }), _jsx(Dialog, { open: !!pending, onOpenChange: (o) => !o && setPending(null), children: _jsxs(DialogContent, { children: [_jsx(DialogHeader, { children: _jsx(DialogTitle, { children: pending?.label }) }), _jsxs("div", { className: "space-y-3", children: [pending?.needsAssignee && (_jsxs("div", { className: "space-y-1", children: [_jsx("span", { className: "text-xs text-tertiary font-mono", children: "Assignee" }), _jsx(AssigneeSelector, { value: assigneeId, onChange: setAssigneeId, teamId: teamId })] })), pending?.needsPriority && (_jsxs("div", { className: "space-y-1", children: [_jsx("span", { className: "text-xs text-tertiary font-mono", children: "Priority" }), _jsxs(Select, { value: priority, onValueChange: (v) => setPriority(v), children: [_jsx(SelectTrigger, { "aria-label": "Priority", children: _jsx(SelectValue, { placeholder: "Select priority" }) }), _jsx(SelectContent, { children: PRIORITIES.map((p) => _jsx(SelectItem, { value: p, children: p }, p)) })] })] }))] }), _jsxs(DialogFooter, { children: [_jsx(Button, { variant: "outline", onClick: () => setPending(null), children: "Cancel" }), _jsx(Button, { disabled: (pending?.needsAssignee && !assigneeId) ||
                                         (pending?.needsPriority && !priority) ||
                                         transition.isPending, onClick: async () => {
                                         if (!pending)

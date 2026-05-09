@@ -12,7 +12,7 @@ export function CommentItem({ comment, currentUserId, currentRole, }) {
     const update = useUpdateComment(comment.bugId, comment.id);
     const del = useDeleteComment(comment.bugId, comment.id);
     const isAuthor = comment.authorId === currentUserId;
-    const canDelete = isAuthor || currentRole === 'ADMIN';
+    const canDelete = isAuthor || currentRole === 'SUPERADMIN';
     const canEdit = isAuthor;
     return (_jsxs("article", { className: "rounded-lg border border-default bg-surface p-4", children: [_jsxs("header", { className: "flex items-center justify-between text-xs text-tertiary font-mono", children: [_jsxs("span", { children: [_jsx("strong", { className: "text-secondary", children: comment.author?.name ?? 'unknown' }), " \u00B7", ' ', formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })] }), (canEdit || canDelete) && (_jsxs(DropdownMenu, { children: [_jsx(DropdownMenuTrigger, { asChild: true, children: _jsx(Button, { variant: "ghost", size: "icon", "aria-label": "Comment actions", children: _jsx(MoreHorizontal, { className: "h-4 w-4" }) }) }), _jsxs(DropdownMenuContent, { align: "end", children: [canEdit && (_jsxs(DropdownMenuItem, { onSelect: () => setEditing(true), children: [_jsx(Pencil, { className: "h-4 w-4 mr-2" }), " Edit"] })), canDelete && (_jsxs(DropdownMenuItem, { onSelect: async () => {
                                             if (!confirm('Delete this comment?'))
