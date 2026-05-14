@@ -94,22 +94,22 @@ async function main() {
 
   const bugDefs = [
     // NEW bugs (2) — reporter only, no assignee
-    { title: 'Login button frozen on Chrome 122', severity: 'CRITICAL', status: 'NEW' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: null, priority: null },
-    { title: 'Signup form validates email twice', severity: 'LOW', status: 'NEW' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: null, priority: null },
+    { title: 'Login button frozen on Chrome 122', severity: 'CRITICAL' as const, status: 'NEW' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: null, priority: null },
+    { title: 'Signup form validates email twice', severity: 'LOW' as const, status: 'NEW' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: null, priority: null },
     // ASSIGNED bugs (2) — lead assigned to a dev
-    { title: 'Avatar distorted on retina screens', severity: 'MEDIUM', status: 'ASSIGNED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P3' },
-    { title: 'Search returns empty results', severity: 'HIGH', status: 'ASSIGNED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' },
+    { title: 'Avatar distorted on retina screens', severity: 'MEDIUM' as const, status: 'ASSIGNED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P3' as const },
+    { title: 'Search returns empty results', severity: 'HIGH' as const, status: 'ASSIGNED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' as const },
     // IN_PROGRESS (2)
-    { title: 'Dashboard chart overlaps title', severity: 'LOW', status: 'IN_PROGRESS' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P4' },
-    { title: 'Markdown chars break comments', severity: 'MEDIUM', status: 'IN_PROGRESS' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P3' },
+    { title: 'Dashboard chart overlaps title', severity: 'LOW' as const, status: 'IN_PROGRESS' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P4' as const },
+    { title: 'Markdown chars break comments', severity: 'MEDIUM' as const, status: 'IN_PROGRESS' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P3' as const },
     // FIXED (2) — dev marked fixed, tester needs to verify
-    { title: 'Password reset email not arriving', severity: 'CRITICAL', status: 'FIXED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P1' },
-    { title: 'Drag-and-drop fails on Safari', severity: 'HIGH', status: 'FIXED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' },
+    { title: 'Password reset email not arriving', severity: 'CRITICAL' as const, status: 'FIXED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P1' as const },
+    { title: 'Drag-and-drop fails on Safari', severity: 'HIGH' as const, status: 'FIXED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' as const },
     // VERIFIED (2) — tester verified, TEAMLEAD or SUPERADMIN can close
-    { title: 'Tooltip clipped at viewport edge', severity: 'LOW', status: 'VERIFIED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P4' },
-    { title: 'Invoice PDF download corrupts', severity: 'HIGH', status: 'VERIFIED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' },
+    { title: 'Tooltip clipped at viewport edge', severity: 'LOW' as const, status: 'VERIFIED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P4' as const },
+    { title: 'Invoice PDF download corrupts', severity: 'HIGH' as const, status: 'VERIFIED' as const, teamId: beta.id, reporterId: testBeta.id, assigneeId: devBeta.id, priority: 'P2' as const },
     // CLOSED (1)
-    { title: 'Old session survives logout', severity: 'CRITICAL', status: 'CLOSED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P1' },
+    { title: 'Old session survives logout', severity: 'CRITICAL' as const, status: 'CLOSED' as const, teamId: alpha.id, reporterId: testAlpha.id, assigneeId: devAlpha.id, priority: 'P1' as const },
   ];
 
   for (const b of bugDefs) {
