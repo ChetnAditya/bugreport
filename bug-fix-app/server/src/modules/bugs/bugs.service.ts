@@ -2,7 +2,7 @@ import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
 import { signUpload } from '../../lib/cloudinary';
 import type { ListBugsQuery, CreateBugInput, UpdateBugInput, TransitionInput } from './bugs.schema';
-import type { Role } from '@prisma/client';
+import type { Role } from '../../../generated/prisma';
 import { canTransition } from './lifecycle';
 
 export async function listBugs(

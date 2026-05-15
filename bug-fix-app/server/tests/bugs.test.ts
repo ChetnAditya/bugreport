@@ -1,7 +1,7 @@
 import { resetDb, createUser, createBug } from './helpers/factories';
 import { api } from './helpers/api';
 import { signJwt } from '../src/lib/jwt';
-import type { Role, BugStatus } from '@prisma/client';
+import type { Role, BugStatus } from '../generated/prisma';
 
 beforeEach(resetDb);
 

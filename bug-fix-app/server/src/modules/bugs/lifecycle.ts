@@ -1,4 +1,4 @@
-import type { Role, BugStatus, Priority } from '@prisma/client';
+import type { Role, BugStatus, Priority } from '../../../generated/prisma';
 
 export interface LifecycleContext {
   fromStatus: BugStatus;

@@ -1,6 +1,6 @@
 import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
-import type { Role } from '@prisma/client';
+import type { Role } from '../../../generated/prisma';
 
 export async function listTeams(actorId: string, actorRole: Role, actorTeamId: string | null) {
   if (actorRole === 'SUPERADMIN') {

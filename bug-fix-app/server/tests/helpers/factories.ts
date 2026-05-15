@@ -1,6 +1,6 @@
 import { prisma } from '../../src/db';
 import { hashPassword } from '../../src/lib/password';
-import type { Role } from '@prisma/client';
+import type { Role, BugStatus, Severity, Priority } from '../../generated/prisma';
 
 export async function resetDb() {
   await prisma.comment.deleteMany();
@@ -11,9 +11,9 @@ export async function resetDb() {
 export async function createBug(opts: {
   reporterId: string;
   assigneeId?: string;
-  status?: import('@prisma/client').BugStatus;
-  severity?: import('@prisma/client').Severity;
-  priority?: import('@prisma/client').Priority;
+  status?: BugStatus;
+  severity?: Severity;
+  priority?: Priority;
   title?: string;
 }) {
   return prisma.bug.create({

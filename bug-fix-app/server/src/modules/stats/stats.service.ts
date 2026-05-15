@@ -1,6 +1,6 @@
 import { prisma } from '../../db';
 import { SEVERITY, STATUS, PRIORITY } from '../bugs/bugs.schema';
-import type { BugStatus, Severity, Priority, Role } from '@prisma/client';
+import type { BugStatus, Severity, Priority, Role } from '../../../generated/prisma';
 
 function zeroes<K extends string>(keys: readonly K[]): Record<K, number> {
   return Object.fromEntries(keys.map((k) => [k, 0])) as Record<K, number>;

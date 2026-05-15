@@ -1,7 +1,7 @@
 import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
 import type { CreateCommentInput, UpdateCommentInput } from './comments.schema';
-import type { Role } from '@prisma/client';
+import type { Role } from '../../../generated/prisma';
 
 const authorSelect = { id: true, name: true, email: true, role: true } as const;
 

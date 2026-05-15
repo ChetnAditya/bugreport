@@ -1,6 +1,6 @@
 import { prisma } from '../../db';
 import { AppError } from '../../lib/http-error';
-import type { Role } from '@prisma/client';
+import type { Role } from '../../../generated/prisma';
 
 const safeSelect = {
   id: true, email: true, name: true, role: true, createdAt: true,

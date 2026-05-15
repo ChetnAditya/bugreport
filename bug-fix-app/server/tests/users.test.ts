@@ -1,7 +1,7 @@
 import { resetDb, createUser } from './helpers/factories';
 import { api } from './helpers/api';
 import { signJwt } from '../src/lib/jwt';
-import type { Role } from '@prisma/client';
+import type { Role } from '../generated/prisma';
 
 beforeEach(resetDb);
 
