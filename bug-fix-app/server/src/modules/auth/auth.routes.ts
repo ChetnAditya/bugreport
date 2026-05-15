@@ -11,7 +11,7 @@ const COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 function setAuthCookie(res: Response, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: env.COOKIE_SECURE ? 'none' : 'lax',
     secure: env.COOKIE_SECURE,
     domain: env.COOKIE_DOMAIN || undefined,
     maxAge: COOKIE_MAX_AGE_MS,
